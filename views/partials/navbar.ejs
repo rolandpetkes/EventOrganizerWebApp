@@ -1,0 +1,20 @@
+<nav id="navbar">
+  <ul id="nav_right">
+    <li><a href="/">Events</a></li>
+    <% if (username) { %>
+      <li><a href="/createEvent">Add Event</a></li>
+      <% } %>
+        <% if (userRole && userRole==='admin' ) { %>
+          <li><a href="/userManagement">User Management</a></li>
+          <% } %>
+  </ul>
+  <ul id="nav_left">
+    <% if (username) { %>
+      <li>Hello, <%= username %>
+      </li>
+      <li><a href="/logout">Logout</a></li>
+      <% } else { %>
+        <li><a href="/login">Login</a></li>
+        <% } %>
+  </ul>
+</nav>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head.ejs', { title: 'Event Manager' }) %>
+  <script src="/register.js"></script>
+
+  <body>
+    <%- include('partials/navbar.ejs') %>
+      <div id="content">
+        <h1>Register</h1>
+        <div id="register-div">
+          <form id="register-form">
+            <div class="input-field">
+              <input type="text" id="username" name="username" required>
+              <label for="username">Name</label>
+            </div>
+
+            <div class="input-field">
+              <input type="email" id="email" name="email" required>
+              <label for="email">Email</label>
+            </div>
+
+            <div class="input-field">
+              <input type="password" id="password" name="password" required>
+              <label for="password">Password</label>
+            </div>
+
+            <div class="input-field">
+              <input type="password" id="password2" name="password2" required>
+              <label for="password2">Confirm Password</label>
+            </div>
+
+            <button class="button" type="submit">Register</button>
+          </form>
+        </div>
+        <div id="message-dialog" class="message-dialog invisible"></div>
+
+        <% if (message) { %>
+          <% if (type==='error' ) { %>
+            <p class="err_message">
+              <%= message %>
+            </p>
+            <% } else { %>
+              <p class="inf_message">
+                <%= message %>
+              </p>
+              <% } %>
+                <% } %>
+      </div>
+      <%- include('partials/footer.ejs') %>
+  </body>
+
+</html>

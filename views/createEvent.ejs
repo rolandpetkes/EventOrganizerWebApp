@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head.ejs', { title: 'Event Manager' }) %>
+
+  <body>
+    <%- include('partials/navbar.ejs') %>
+      <div id="content">
+        <h1>Create an <gr>Event</gr>
+        </h1>
+        <div id="event-creation-div">
+          <form action="/event-creation-form" method="post">
+            <div class="input-field">
+              <input type="text" id="eventName" name="eventName" required>
+              <label> Name</label>
+            </div>
+
+            <div class="date-field">
+              <input type="date" id="eventStartDate" name="eventStartDate" required>
+              <label>Start Date</label>
+            </div>
+
+            <div class="date-field">
+              <input type="date" id="eventEndDate" name="eventEndDate" required>
+              <label>End Date</label>
+            </div>
+
+            <div class="input-field">
+              <input type="text" id="eventLocation" name="eventLocation" required>
+              <label>Location</label>
+            </div>
+
+            <% if (userRole==="admin" ) { %>
+              <div class="select-field">
+                <select id="creator" name="creator">
+                  <% users.forEach(function(user) { %>
+                    <option value="<%= user.username %>">
+                      <%= user.username %>
+                    </option>
+                    <% }) %>
+                </select>
+                <label>Creator</label>
+              </div>
+              <% } %>
+
+                <button class="button" type="submit">Submit</button>
+          </form>
+        </div>
+
+        <% if (message) { %>
+          <% if (type==='error' ) { %>
+            <p class="err_message">
+              <%= message %>
+            </p>
+            <% } else { %>
+              <p class="inf_message">
+                <%= message %>
+              </p>
+              <% } %>
+                <% } %>
+      </div>
+
+      <%- include('partials/footer.ejs') %>
+  </body>
+
+</html>

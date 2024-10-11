@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head.ejs', { title: 'Event Manager' }) %>
+  <script src="/eventDetails.js"></script>
+
+  <body id="<%= event._id %>" data-username="<%= username %>" data-userrole="<%= userRole %>">
+    <%- include('partials/navbar.ejs') %>
+      <div id="content">
+        <h1>
+          <%= event.eventName %>
+        </h1>
+        <div id="details_div" class="align-left">
+          <h2>Event Details</h2>
+          <p><i class="fas fa-calendar-alt fa-lg"></i> <b>Start Date:</b>
+            <%= event.eventStartDate %>
+          </p>
+          <p><i class="fas fa-calendar-check fa-lg"></i> <b>End Date:</b>
+            <%= event.eventEndDate %>
+          </p>
+          <p><i class="fas fa-map-marker-alt fa-lg"></i> <b>Location:</b>
+            <%= event.eventLocation %>
+          </p>
+          <p><i class="fas fa-users fa-lg"></i> <b>Organizers:</b>
+            <% if (event.organizerList.length) { %>
+              <%= event.organizerList.join(', ') %>
+                <% } else { %>
+                  No organizers
+                  <% } %>
+          </p>
+          <% if (event.imageList.length) { %>
+            <h2>Event Images</h2>
+            <div class="image_container">
+              <% event.imageList.forEach((image)=> { %>
+                <div class="image_div">
+                  <img src="/<%= image.filename %>" alt="<%= image.originalname %>">
+                  <% if (username === event.creator || userRole === "admin") { %>
+                  <button id="<%= image.filename %>" class="cancel_button"><i class="fas fa-trash-can"></i></button>
+                  <% } %>
+                </div>
+                <% }); %>
+            </div>
+            <div id="message-dialog1" class="message-dialog invisible"></div>
+            <% } %>
+        </div>
+
+        <div class="align-left">
+        <% if (username) { %>
+        <div id="joining_div">
+          <h2>Join or leave event organizer team</h2>
+          <form id="organizer-joining-form" action="/organizer-joining-form" method="post">
+            <input type="hidden" name="eventID" value="<%= event._id %>">
+            <% if (event.organizerList.includes(username)) { %>
+              <button form="organizer-joining-form" class="cancel_button" type="submit" name="action"
+                  value="remove">Leave</button>
+                <% } else { %>
+                  <button form="organizer-joining-form" type="submit" name="action" value="join">Join</button>
+                <% } %>
+                </form>
+        </div>
+
+        <% if (username === event.creator || userRole === "admin") { %>
+        <div id="upload_div">
+          <h2>Upload Image</h2>
+          <form action="/image-upload-form" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="eventID" value="<%= event._id %>">
+
+            <label for="image">Select Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+            <button class="confirm_button" type="submit">Upload Image</button>
+          </form>
+        </div>
+        <% } %>
+        <% } %>
+      </div>
+        
+        <% if (userRole === "admin") { %>
+          <div id="task-creation-div">
+            <form id="task-creation-form">
+              <h2>Create Task</h2>
+              <div id="inputs">
+                <div class="single-line-inputs">
+                  <input type="hidden" name="eventID" value="<%= event._id %>">
+                  <div class="input-field">
+                    <input type="text" id="taskName" name="taskName" required>
+                    <label for="taskName">Task Name</label>
+                  </div>
+
+                  <div class="select-field">
+                    <select id="taskAssignee" name="taskAssignee" required>
+                      <option value="" disabled selected></option>
+                      <% event.organizerList.forEach((organizer)=> { %>
+                        <option value="<%= organizer %>"><%= organizer %></option>
+                      <% }); %>
+                    </select>
+                    <label for="taskAssignee">Assignee</label>
+                  </div>
+
+                  <div class="date-field">
+                    <input type="date" id="taskDeadline" name="taskDeadline" required>
+                    <label for="taskDeadline">Task Deadline</label>
+                  </div>
+                </div>
+
+                <div class="textarea-field">
+                  <textarea type="text" id="taskDescription" name="taskDescription" required></textarea>
+                  <label for="taskDescription">Task Description</label>
+                </div>
+
+                <button type="submit">Create Task</button>
+              </div>
+            </form>
+           </div>
+        <% } %>
+
+        <div id="message-dialog" class="message-dialog invisible"></div>
+
+          <% if (tasks.some(task => task.assignee === username) || userRole === "admin") { %>
+            <% if (userRole === "admin") { %>
+              <div id="summary"></div>
+            <% } %>
+            <div class="table-container">
+                <div class="filter-container">
+                  <div class="filter-icon-container">
+                    <i class="filter-icon fa-solid fa-filter"></i>
+                  </div>
+                  <div class="filter-popup hidden">
+                    <div>
+                      <label class="checkbox-container">
+                        <input type="checkbox" id="filterOrganizer">
+                        <div class="checkmark"></div>
+                        My tasks
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-header">
+                  <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                      <tr>
+                        <th>Task Name</th>
+                        <th>Deadline</th>
+                        <th>Assignee</th>
+                        <th>Stage</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+                <div class="table-content">
+                  <table id="tasks" cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div id="message-dialog2" class="message-dialog invisible"></div>
+                <% } %>
+
+        <div class="message_div">
+          <% if (message) { %>
+            <% if (type===' error' ) { %>
+                <p class="err_message">
+                  <%= message %>
+                </p>
+                <% } else { %>
+                  <% if (type==='success' ) { %>
+                    <p class="inf_message">
+                      <%= message %>
+                    </p>
+                    <% } %>
+                      <% } %>
+                        <% } %>
+        </div>
+      </div>
+      <%- include('partials/footer.ejs') %>
+  </body>
+
+</html>

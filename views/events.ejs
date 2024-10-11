@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head.ejs', { title: 'Event Manager' }) %>
+  <script src="/events.js"></script>
+
+  <body>
+    <%- include('partials/navbar.ejs') %>
+
+      <h1>
+        <gr>Event</gr> Manager
+      </h1>
+
+      <input type="hidden" id="username" value="<%= username %>">
+      <div class="table-container">
+        <% if (username) { %>
+          <div class="filter-container">
+            <div class="filter-icon-container">
+              <i class="filter-icon fa-solid fa-filter"></i>
+            </div>
+            <div class="filter-popup hidden">
+              <div>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="filterOrganizer">
+                  <div class="checkmark"></div>
+                  Events I'm organizing
+                </label>
+              </div>
+            </div>
+          </div>
+          <% } %>
+            <% if (events.length) { %>
+              <div class="table-header">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Organizers</th>
+                      <th>Images</th>
+                      <th>Details</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="table-content-">
+                <table id="events" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <% } else { %>
+                <p class="message">No events to show</p>
+                <% } %>
+      </div>
+
+      <div id="message-dialog" class="message-dialog invisible"></div>
+      <%- include('partials/footer.ejs') %>
+  </body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head.ejs', { title: 'Error' }) %>
+
+  <body>
+    <%- include('partials/navbar.ejs') %>
+      <div id="content">
+        <h1>OOPS... We have encountered an error</h1>
+        <h2>Message:</h2>
+        <p class="message">
+          <%= message %>
+        </p>
+        <p>Maybe you would like to visit the
+          <a href="/">events</a>
+          page?
+        </p>
+      </div>
+      <%- include('partials/footer.ejs') %>
+  </body>
+
+</html>
